@@ -7,13 +7,15 @@ import {
   PhoneInput,
   PhoneBtn,
 } from './Phonebook.styled';
-import { addContact } from 'redux/contactsSplice';
-import { useDispatch } from 'react-redux';
+import { contactsApi, useCreateContactMutation } from 'redux/mockApi';
+import { nanoid } from 'nanoid';
 
 function PhonebookSectionp() {
   const [nameInput, setNameInput] = useState('');
   const [numberInput, setNumberInput] = useState('');
-  const dispatch = useDispatch();
+  const [createContact] = useCreateContactMutation();
+  const contactsState =
+    contactsApi.endpoints.getContacts.useQueryState('').data;
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -35,11 +37,21 @@ function PhonebookSectionp() {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    if (nameInput && numberInput) {
-      dispatch(addContact({ nameInput, numberInput }));
-      setNameInput('');
-      setNumberInput('');
+    const newContact = {
+      id: nanoid(),
+      name: nameInput,
+      phone: numberInput,
+    };
+    const contactInState = contactsState.some(
+      item => item.name.toLowerCase() === nameInput.toLowerCase()
+    );
+    if (contactInState) {
+      alert(`${nameInput} is already in contacts!`);
+      return;
     }
+    createContact(newContact);
+    setNameInput('');
+    setNumberInput('');
   };
 
   return (

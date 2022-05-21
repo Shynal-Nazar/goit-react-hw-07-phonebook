@@ -48,3 +48,10 @@ export const ContactsBtn = styled.button`
     background-color: #1976d2;
   }
 `;
+
+export const LoaderBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+`;
